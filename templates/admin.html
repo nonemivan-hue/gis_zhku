@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Администрирование — ГИС ЖКУ{% endblock %}
+{% block content %}
+<h2>Администрирование</h2>
+
+<h3>Пользователи</h3>
+<table>
+<tr><th>Логин</th><th>ФИО</th><th>Роль</th><th></th></tr>
+{% for u in users %}
+<tr><td>{{ u.username }}</td><td>{{ u.fullname }}</td><td>{{ ROLE_TITLES.get(u.role, u.role) }}</td>
+<td>{% if u.username != 'admin' %}<form method="post" action="{{ url_for('admin_action') }}" onsubmit="return confirm('Удалить пользователя?')"><input type="hidden" name="action" value="delete_user"><input type="hidden" name="username" value="{{ u.username }}"><button class="btn gray" type="submit">Удалить</button></form>{% endif %}</td></tr>
+{% endfor %}
+</table>
+
+<h3>Добавить пользователя</h3>
+<form method="post" action="{{ url_for('admin_action') }}">
+<input type="hidden" name="action" value="add_user">
+<p><input name="username" placeholder="Логин"> <input name="fullname" placeholder="ФИО">
+<select name="role"><option value="admin">Администратор</option><option value="operator">Оператор</option><option value="viewer">Просмотр</option></select>
+<input name="password" type="password" placeholder="Пароль">
+<button class="btn" type="submit">Добавить</button></p>
+</form>
+
+<h3>Активные сессии</h3>
+<table><tr><th>Пользователь</th><th>Роль</th><th>IP</th><th>Вход</th><th>Активность</th></tr>
+{% for s in sessions_list %}
+<tr><td>{{ s.username }}</td><td>{{ ROLE_TITLES.get(s.role, s.role) }}</td><td>{{ s.ip }}</td><td>{{ s.login_time }}</td><td>{{ s.last_activity }}</td></tr>
+{% endfor %}
+</table>
+<form method="post" action="{{ url_for('admin_action') }}"><input type="hidden" name="action" value="clear_sessions"><button class="btn gray" type="submit">Очистить активные сессии</button></form>
+
+<h3>Обслуживание</h3>
+<form method="post" action="{{ url_for('admin_action') }}">
+<input type="hidden" name="action" value="backup">
+<button class="btn" type="submit">Создать резервную копию</button>
+</form>
+
+<h4>Восстановление из резервной копии</h4>
+<p style="font-size:13px;color:#666">Перед восстановлением автоматически создается предохранительная копия (pre_restore_...). Файл проверяется: посторонние файлы не принимаются.</p>
+<form method="post" action="{{ url_for('admin_action') }}" enctype="multipart/form-data" onsubmit="return confirm('Текущая база будет заменена. Продолжить?')">
+<input type="hidden" name="action" value="restore">
+<input type="file" name="restore_file" accept=".db" required>
+<button class="btn" type="submit">Восстановить</button>
+</form>
+
+<h3>Резервные копии (последние)</h3>
+<ul>{% for b in backups %}<li>{{ b }}</li>{% endfor %}</ul>
+
+<h3>Журнал действий</h3>
+<table><tr><th>Время</th><th>Пользователь</th><th>Действие</th><th>Детали</th></tr>
+{% for a in audit_rows %}
+<tr><td>{{ a.ts }}</td><td>{{ a.username }}</td><td>{{ a.action }}</td><td>{{ a.details }}</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

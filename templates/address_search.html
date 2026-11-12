@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Результаты поиска — ГИС ЖКУ{% endblock %}
+{% block content %}
+<h2>Результаты поиска{% if query %}: «{{ query }}»{% endif %}</h2>
+<p><a class="btn gray" href="{{ url_for('index') }}">На главную</a></p>
+{% if groups %}
+{% if groups|length > 1 %}
+<p><a class="btn green" href="{{ url_for('address_search_report_all', query=query) }}">Создать таблицу по всем найденным адресам</a></p>
+{% endif %}
+<table>
+<tr><th>№</th><th>Адрес</th><th>ЕЛС</th><th></th></tr>
+{% for g in groups %}
+<tr><td>{{ loop.index }}</td><td>{{ g.address_full }}</td><td>{{ g.els_list }}</td>
+<td><a class="btn" href="{{ url_for('address_search_report', query=query, n=loop.index0) }}">Отчет</a></td></tr>
+{% endfor %}
+</table>
+{% else %}
+<p>Ничего не найдено.</p>
+{% endif %}
+{% endblock %}

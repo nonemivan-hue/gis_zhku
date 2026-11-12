@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Результат импорта — ГИС ЖКУ{% endblock %}
+{% block content %}
+<h2>Результат импорта</h2>
+{% if stats.new is defined %}
+<table>
+<tr><th>Новых записей</th><td>{{ stats.new }}</td><th>Обновлено</th><td>{{ stats.upd }}</td><th>Пропущено</th><td>{{ stats.skipped }}</td></tr>
+</table>
+{% else %}
+<table>
+<tr><th>Новых счетов</th><td>{{ stats.accounts_new }}</td><th>Обновлено счетов</th><td>{{ stats.accounts_upd }}</td></tr>
+<tr><th>Новых адресов</th><td>{{ stats.addresses_new }}</td><th>Обновлено адресов</th><td>{{ stats.addresses_upd }}</td></tr>
+<tr><th>Новых организаций</th><td>{{ stats.orgs_new }}</td><th>Обновлено организаций</th><td>{{ stats.orgs_upd }}</td></tr>
+<tr><th>Пропущено строк</th><td>{{ stats.skipped }}</td></tr>
+</table>
+{% endif %}
+{% if stats.errors %}
+<h3>Ошибки</h3>
+<ul>{% for e in stats.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+{% endif %}
+<p><a class="btn" href="{{ back }}">Назад</a></p>
+{% endblock %}

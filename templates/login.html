@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Вход — ГИС ЖКУ{% endblock %}
+{% block content %}
+<div style="max-width:360px;margin:60px auto;background:#fff;padding:24px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,.15)">
+<h2>Вход в систему</h2>
+{% if error %}<div class="flash">{{ error }}</div>{% endif %}
+<form method="post">
+<p><input name="username" placeholder="Логин" style="width:100%" autofocus></p>
+<p><input name="password" type="password" placeholder="Пароль" style="width:100%"></p>
+<p><button class="btn" type="submit">Войти</button></p>
+</form>
+<p style="font-size:12px;color:#888">admin / admin123 — администратор<br>operator / operator123 — оператор<br>viewer / viewer123 — просмотр</p>
+</div>
+{% endblock %}

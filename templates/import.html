@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Импорт — ГИС ЖКУ{% endblock %}
+{% block content %}
+<h2>Универсальный импорт</h2>
+<p><a class="btn" href="{{ url_for('import_template') }}">Скачать шаблон</a></p>
+<form method="post" enctype="multipart/form-data">
+<p><input type="file" name="file" accept=".xlsx,.xls" required></p>
+<p><select name="mode"><option value="add">Добавить</option><option value="replace">Заменить все</option></select>
+<button class="btn" type="submit">Импортировать</button></p>
+</form>
+{% endblock %}

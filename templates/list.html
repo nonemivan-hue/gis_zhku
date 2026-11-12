@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}{{ meta.title }} — ГИС ЖКУ{% endblock %}
+{% block content %}
+<h2>{{ meta.title }}</h2>
+<p><a class="btn" href="{{ url_for('ref_template', sec=sec) }}">Скачать шаблон</a></p>
+<table>
+<tr>{% for key, label in meta.columns %}<th>{{ label }}</th>{% endfor %}<th></th></tr>
+{% for r in rows %}
+<tr>
+{% for key, label in meta.columns %}
+<td>{% if sec=='accounts' and key=='org_ref' %}{{ org_map.get(r[key], r[key]) }}{% else %}{{ r[key] }}{% endif %}</td>
+{% endfor %}
+<td>
+<form method="post" style="display:inline" onsubmit="return confirm('Удалить запись?')">
+<input type="hidden" name="action" value="delete"><input type="hidden" name="id" value="{{ r.id }}">
+<button class="btn gray" type="submit">Удалить</button>
+</form>
+</td>
+</tr>
+{% endfor %}
+</table>
+<h3>Добавить запись</h3>
+<form method="post">
+<input type="hidden" name="action" value="add">
+<table>
+{% for key, label in meta.columns %}
+<tr><td>{{ label }}</td><td><input name="{{ key }}" style="width:100%"></td></tr>
+{% endfor %}
+</table>
+<p><button class="btn green" type="submit">Сохранить</button></p>
+</form>
+<h3>Импорт</h3>
+<form method="post" enctype="multipart/form-data" action="{{ url_for('ref_import', sec=sec) }}">
+<input type="file" name="file" accept=".xlsx,.xls">
+<select name="mode"><option value="add">Добавить</option><option value="replace">Заменить</option></select>
+<button class="btn" type="submit">Импортировать</button>
+</form>
+{% endblock %}

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>{% block title %}ГИС ЖКУ{% endblock %}</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f4f6f8}
+header{background:#2c3e50;color:#fff;padding:10px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+header h1{font-size:18px;margin:0}
+nav a{color:#fff;margin-right:12px;text-decoration:none;font-size:14px}
+nav a.active{font-weight:bold;text-decoration:underline}
+.user{margin-left:auto;font-size:13px}
+main{padding:20px;max-width:1100px;margin:0 auto}
+table{border-collapse:collapse;width:100%;background:#fff;margin-bottom:12px}
+th,td{border:1px solid #ccc;padding:6px 8px;font-size:14px;text-align:left}
+th{background:#eef1f4}
+.btn{display:inline-block;padding:6px 14px;background:#3498db;color:#fff;border:0;border-radius:4px;cursor:pointer;text-decoration:none;font-size:14px}
+.btn.gray{background:#95a5a6}.btn.green{background:#27ae60}.btn.red{background:#c0392b}
+input,select{padding:5px;font-size:14px}
+.flash{background:#ffe9c7;border:1px solid #f0b968;padding:8px 12px;margin-bottom:12px;border-radius:4px}
+h2{margin-top:0}
+</style>
+</head>
+<body>
+<header>
+<h1>ГИС ЖКУ — учёт лицевых счетов</h1>
+<nav>
+{% if can('search') %}<a href="{{ url_for('index') }}">Главная</a>{% endif %}
+{% if can('search') %}<a href="{{ url_for('search') }}">Поиск</a>{% endif %}
+{% if can('organizations') %}<a href="{{ url_for('ref_list', sec='organizations') }}">Организации</a>{% endif %}
+{% if can('accounts') %}<a href="{{ url_for('ref_list', sec='accounts') }}">Лицевые счета</a>{% endif %}
+{% if can('addresses') %}<a href="{{ url_for('ref_list', sec='addresses') }}">Адреса</a>{% endif %}
+{% if can('import') %}<a href="{{ url_for('import_universal') }}">Импорт</a>{% endif %}
+{% if can('sessions') %}<a href="{{ url_for('admin') }}">Администрирование</a>{% endif %}
+</nav>
+<div class="user">
+{% if current_user() %}{{ current_user()['fullname'] or current_user()['username'] }} ({{ ROLE_TITLES.get(current_user()['role'],'') }}) — <a href="{{ url_for('logout') }}" style="color:#fff">Выход</a>{% endif %}
+</div>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<div style="text-align:center;color:#888;font-size:12px;padding:10px">Версия {{ APP_VERSION }}</div>
+{% block scripts %}{% endblock %}
+</body>
+</html>

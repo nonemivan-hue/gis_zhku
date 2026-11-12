@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Главная — ГИС ЖКУ{% endblock %}
+{% block content %}
+<h2>Главное меню</h2>
+<table>
+<tr><th>Организации</th><th>Лицевые счета</th><th>Адреса</th><th>Пользователи</th></tr>
+<tr><td>{{ stats.orgs }}</td><td>{{ stats.accounts }}</td><td>{{ stats.addresses }}</td><td>{{ stats.users }}</td></tr>
+</table>
+<p style="margin-top:16px"><button class="btn" onclick="showSearch()">Поиск по части адреса</button></p>
+{% if active_users %}
+<h3>Активные пользователи</h3>
+<table>
+<tr><th>Пользователь</th><th>Роль</th><th>IP</th><th>Вход</th><th>Активность</th></tr>
+{% for u in active_users %}
+<tr><td>{{ u.fullname or u.username }}</td><td>{{ ROLE_TITLES.get(u.role,u.role) }}</td><td>{{ u.ip }}</td><td>{{ u.login_time }}</td><td>{{ u.last_activity }}</td></tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<div id="searchModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:10">
+  <div style="background:#fff;width:420px;margin:120px auto;padding:20px;border-radius:6px">
+    <h3>Поиск по части адреса</h3>
+    <p style="font-size:13px;color:#666">Введите слова в порядке следования, например: Геленджик лунная 7</p>
+    <p id="searchMsg" style="color:#c0392b;display:none">Не заполнены данные для поиска</p>
+    <input id="searchQ" style="width:100%" onkeydown="if(event.key==='Enter')doSearch()">
+    <p><button class="btn" onclick="doSearch()">Найти</button> <button class="btn gray" onclick="closeModal()">Отмена</button></p>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function showSearch(){document.getElementById('searchModal').style.display='block';document.getElementById('searchMsg').style.display='none';document.getElementById('searchQ').value='';document.getElementById('searchQ').focus()}
+function closeModal(){document.getElementById('searchModal').style.display='none'}
+function doSearch(){var q=document.getElementById('searchQ').value.trim();if(!q){document.getElementById('searchMsg').style.display='block';return}window.location.href='{{ url_for("address_search") }}?query='+encodeURIComponent(q)}
+</script>
+{% endblock %}
